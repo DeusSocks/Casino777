@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System.Text.Json;
+using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Casino777
 {
@@ -48,7 +50,14 @@ namespace Casino777
             lblBalance.Text = $"Баланс: {Balance.Cash}";
         }
 
-
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Dictionary<string, long> saveBalance = new Dictionary<string, long> {
+                {"Balance",Balance.Cash }
+            };
+            string json = JsonSerializer.Serialize(saveBalance);
+            File.WriteAllText("save_file.json", json);
+        }
 
     }
 

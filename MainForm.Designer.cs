@@ -43,6 +43,7 @@
             Margin = new Padding(4, 5, 4, 5);
             Name = "MainForm";
             Text = "Casino777";
+            FormClosing += MainForm_FormClosing;
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)bindingBalance).EndInit();
             ResumeLayout(false);

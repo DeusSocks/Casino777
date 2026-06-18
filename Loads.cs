@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Casino777
@@ -11,6 +12,19 @@ namespace Casino777
 
         public void MainForm_Load(object sender, EventArgs e)
         {
+            string path = "save_file.json";
+            if (File.Exists(path))
+            {
+                string jsonString = File.ReadAllText(path);
+                Dictionary<string, long>? config = JsonSerializer.Deserialize<Dictionary<string, long>>(jsonString);
+                if (config != null)
+                {
+                    Balance.Cash = config["Balance"];
+                }
+            }
+
+
+
             table = new TableLayoutPanel();
             table.Dock = DockStyle.Fill;
             table.ColumnCount = 3;
@@ -30,7 +44,7 @@ namespace Casino777
 
             table.Controls.Add(lblBalance, 0, 0);
             table.SetColumnSpan(lblBalance, 3);
-            
+
 
             Label lblCasino = new Label();
             lblCasino.Text = "НеКазино 777";
@@ -58,7 +72,7 @@ namespace Casino777
                 table.RowCount++;
                 table.RowStyles.Add(
                     new RowStyle(SizeType.Absolute, 50));
-                table.Controls.Add(button, 1, 3+i);
+                table.Controls.Add(button, 1, 3 + i);
                 button.AutoSize = true;
                 button.Anchor = AnchorStyles.Top;
                 i++;
@@ -87,9 +101,11 @@ namespace Casino777
             slotsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
             Controls.Add(slotsTable);
 
+
+
             slotsTable.Controls.Add(lblBalance, 1, 0);
             slotsTable.SetColumnSpan(lblBalance, 2);
-            
+
 
             slotsTable.Controls.Add(btnToMenu, 0, 0);
 
@@ -144,7 +160,8 @@ namespace Casino777
 
         }
 
-        private void mineSweeperLoad(object sender, EventArgs e) {
+        private void mineSweeperLoad(object sender, EventArgs e)
+        {
             table.Hide();
             if (MSTable != null)
             {
@@ -169,7 +186,7 @@ namespace Casino777
 
             MSTable.Controls.Add(lblBalance, 1, 0);
             MSTable.SetColumnSpan(lblBalance, 2);
-            
+
             MSTable.Controls.Add(btnToMenu, 0, 0);
 
             MSField = new TableLayoutPanel();
@@ -209,8 +226,9 @@ namespace Casino777
                     MSbuttons[row][col].Dock = DockStyle.Fill;
                     MSbuttons[row][col].FlatStyle = FlatStyle.Flat;
                     MSbuttons[row][col].BackColor = Color.LightGray;
-                    MSField.Controls.Add(MSbuttons[row][col],col,row);
+                    MSField.Controls.Add(MSbuttons[row][col], col, row);
                     MSbuttons[row][col].Enabled = false;
+                    MSbuttons[row][col].Click += buttonsMS_Click;
                 }
             }
 
@@ -248,7 +266,7 @@ namespace Casino777
             lblMSstat.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             MSTable.RowCount++;
             MSTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-            MSTable.Controls.Add(lblMSstat,0,4);
+            MSTable.Controls.Add(lblMSstat, 0, 4);
         }
     }
 }

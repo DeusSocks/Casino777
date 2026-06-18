@@ -64,11 +64,15 @@ namespace Casino777
             }
         }
         //Сапер
+        public long MSbet;
+        public int MScountCash;
+        public int MScountDiamonds;
         private void BtnMSstart_Click(object? sender, EventArgs e)
         {
             btnMSstart.Enabled = false;
-            long bet = (long)MSchoiseBet.Value;
-            Balance.Cash -= bet;
+            MSbet = (long)MSchoiseBet.Value;
+            Balance.Cash -= MSbet;
+            MSwinCash = 0;
             _MSField = new List<List<Bombs>>(MSField.RowCount);
             for (int row = 0; row < MSField.RowCount; row++)
             {
@@ -81,14 +85,15 @@ namespace Casino777
             int countBombs = 5;
             int countDiamonds = 5;
             Random rand = new Random();
-            for (int i = 0; i < countBombs; i++) {
+            for (int i = 0; i < countBombs; i++)
+            {
                 int row = rand.Next(0, countBombs);
                 int col = rand.Next(0, countBombs);
                 if (_MSField[row][col] != Bombs.Bomb)
-                    { _MSField[row][col] = Bombs.Bomb; }
+                { _MSField[row][col] = Bombs.Bomb; }
                 else
                 {
-                    while(_MSField[row][col] == Bombs.Bomb)
+                    while (_MSField[row][col] == Bombs.Bomb)
                     {
                         row = rand.Next(0, countBombs);
                         col = rand.Next(0, countBombs);
@@ -112,67 +117,66 @@ namespace Casino777
                     _MSField[row][col] = Bombs.Diamond;
                 }
             }
-            for (int row = 0; row < MSField.RowCount; row++)
-            {
-                MSbuttons.Add(new List<Button>());
-                for (int col = 0; col < MSField.ColumnCount; col++)
-                {
-                    MSbuttons[row][col].Enabled = true;
-                    MSbuttons[row][col].Text = "";
-                    MSbuttons[row][col].Click += buttonsMS_Click;
-                }
-            }
+            clearField(true);
         }
         private void buttonsMS_Click(object? sender, EventArgs e)
         {
             Button clickedButton = (Button)sender;
             TableLayoutPanelCellPosition pos = MSField.GetCellPosition(clickedButton);
-            int row = pos.Row; 
-            int col = pos.Column; 
+            int row = pos.Row;
+            int col = pos.Column;
             clickedButton.Enabled = false;
             switch (_MSField[row][col])
             {
                 case Bombs.Cash:
                     clickedButton.Text = "$";
-
+                    MScountCash++;
                     break;
                 case Bombs.Diamond:
                     clickedButton.Text = "💎";
+                    MScountDiamonds++;
                     break;
                 case Bombs.Bomb:
                     clickedButton.Text = "💣";
+                    MSbet = 0;
+                    BtnMSstop_Click(sender, e);
                     break;
+            }
+        }
+        public void clearField(bool enabled)
+        {
+            for (int row = 0; row < MSField.RowCount; row++)
+            {
+                for (int col = 0; col < MSField.ColumnCount; col++)
+                {
+                    MSbuttons[row][col].Enabled = enabled;
+                    MSbuttons[row][col].Text = "";
+                }
             }
         }
         private void BtnMSstop_Click(object? sender, EventArgs e)
         {
-            
+
+            MSwinCash = (long)(MSbet * (1 + MScountCash * 0.3) * (Math.Pow(1.5, MScountDiamonds)));
+            MScountDiamonds = 0;
+            MScountCash = 0;
+            MessageBox.Show($"Вы выиграли: {MSwinCash}");
+            Balance.Cash += MSwinCash;
+            MSwinCash = 0;
+            clearField(false);
+            btnMSstart.Enabled = true;
         }
         //Общие
         private void BtnToMenu_Click(object? sender, EventArgs e)
         {
-            if (slotsTable!=null && slotsTable.Visible) { slotsTable.Hide(); }
-            else if (MSTable!=null && MSTable.Visible) { MSTable.Hide(); }
+            if (slotsTable != null && slotsTable.Visible) { slotsTable.Hide(); }
+            else if (MSTable != null && MSTable.Visible) { MSTable.Hide(); }
             table.Show();
         }
         public void balanceChanged()
         {
             lblBalance.Text = $"Баланс: {Balance.Cash}";
         }
-        public static class Balance
-        {
-            public static event Action OnCashChanged;
-            private static long _cash;
-            static public long Cash
-            {
-                get { return _cash; }
-                set
-                {
-                    _cash = value;
-                    OnCashChanged?.Invoke();
-                }
-            }
-            static Balance() { _cash = 1000; }
-        }
+
     }
 }
