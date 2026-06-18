@@ -70,6 +70,7 @@ namespace Casino777
         private void BtnMSstart_Click(object? sender, EventArgs e)
         {
             btnMSstart.Enabled = false;
+            btnMSstop.Enabled = true;
             MSbet = (long)MSchoiseBet.Value;
             Balance.Cash -= MSbet;
             MSwinCash = 0;
@@ -142,6 +143,7 @@ namespace Casino777
                     BtnMSstop_Click(sender, e);
                     break;
             }
+            lblMSstat.Text = $"Ваша ставка: {MSbet}\nВаш выигрыш: {(long)(MSbet * (1 + MScountCash * 0.3) * (Math.Pow(1.5, MScountDiamonds)))}";
         }
         public void clearField(bool enabled)
         {
@@ -160,11 +162,13 @@ namespace Casino777
             MSwinCash = (long)(MSbet * (1 + MScountCash * 0.3) * (Math.Pow(1.5, MScountDiamonds)));
             MScountDiamonds = 0;
             MScountCash = 0;
+            btnMSstart.Enabled = true;
+            btnMSstop.Enabled = false;
             MessageBox.Show($"Вы выиграли: {MSwinCash}");
             Balance.Cash += MSwinCash;
             MSwinCash = 0;
             clearField(false);
-            btnMSstart.Enabled = true;
+            
         }
         //Общие
         private void BtnToMenu_Click(object? sender, EventArgs e)
@@ -172,6 +176,8 @@ namespace Casino777
             if (slotsTable != null && slotsTable.Visible) { slotsTable.Hide(); }
             else if (MSTable != null && MSTable.Visible) { MSTable.Hide(); }
             table.Show();
+            table.Controls.Add(btnToMenu, 0, 0);
+            table.Controls.Add(lblBalance, 1, 0);
         }
         public void balanceChanged()
         {

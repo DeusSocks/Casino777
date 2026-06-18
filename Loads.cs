@@ -85,6 +85,8 @@ namespace Casino777
             if (slotsTable != null)
             {
                 slotsTable.Show();
+                slotsTable.Controls.Add(btnToMenu, 0, 0);
+                slotsTable.Controls.Add(lblBalance, 1, 0);
                 return;
             }
             slotsTable = new TableLayoutPanel();
@@ -165,6 +167,8 @@ namespace Casino777
             table.Hide();
             if (MSTable != null)
             {
+                MSTable.Controls.Add(lblBalance, 1, 0);
+                MSTable.Controls.Add(btnToMenu, 0, 0);
                 MSTable.Show();
                 return;
             }
@@ -259,6 +263,7 @@ namespace Casino777
             btnMSstop.AutoSize = true;
             btnMSstop.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             btnMSstop.Click += BtnMSstop_Click;
+            btnMSstop.Enabled = false;
 
             lblMSstat = new Label();
             lblMSstat.Text = "Ваша ставка: 0\nВаш выигрыш: 0";
