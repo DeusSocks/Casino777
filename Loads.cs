@@ -23,8 +23,6 @@ namespace Casino777
                 }
             }
 
-
-
             table = new TableLayoutPanel();
             table.Dock = DockStyle.Fill;
             table.ColumnCount = 3;
@@ -63,8 +61,12 @@ namespace Casino777
             btnMS.Text = "Сапер";
             btnMS.Click += mineSweeperLoad;
 
+            Button btnRoulette = new Button();
+            btnRoulette.Text = "Рулетка";
+            btnRoulette.Click += RouletteLoad;
+
             List<Button> menuButtons = new List<Button>() {
-                btnSlots,btnMS
+                btnSlots,btnMS, btnRoulette
             };
             int i = 0;
             foreach (Button button in menuButtons)
@@ -81,35 +83,11 @@ namespace Casino777
 
         private void slotsLoad(object sender, EventArgs e)
         {
-            table.Hide();
-            if (slotsTable != null)
-            {
-                slotsTable.Show();
-                slotsTable.Controls.Add(btnToMenu, 0, 0);
-                slotsTable.Controls.Add(lblBalance, 1, 0);
-                return;
-            }
-            slotsTable = new TableLayoutPanel();
-            slotsTable.Dock = DockStyle.Fill;
-            slotsTable.ColumnCount = 3;
-            slotsTable.RowCount = 3;
+            if (checkLoad(slotsTable))
+            { slotsTable = new TableLayoutPanel(); }
+            else { return; }
 
-            slotsTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
-            slotsTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
-            slotsTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
-
-            slotsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-            slotsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 175));
-            slotsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
-            Controls.Add(slotsTable);
-
-
-
-            slotsTable.Controls.Add(lblBalance, 1, 0);
-            slotsTable.SetColumnSpan(lblBalance, 2);
-
-
-            slotsTable.Controls.Add(btnToMenu, 0, 0);
+            loadHeader(slotsTable,175);
 
             slotsWindow = new TableLayoutPanel();
             slotsWindow.RowCount = 1;
@@ -164,42 +142,19 @@ namespace Casino777
 
         private void mineSweeperLoad(object sender, EventArgs e)
         {
-            table.Hide();
-            if (MSTable != null)
-            {
-                MSTable.Controls.Add(lblBalance, 1, 0);
-                MSTable.Controls.Add(btnToMenu, 0, 0);
-                MSTable.Show();
-                return;
-            }
-            MSTable = new TableLayoutPanel();
-            MSTable.Dock = DockStyle.Fill;
-            MSTable.ColumnCount = 3;
-            MSTable.RowCount = 3;
+            if (checkLoad(MSTable))
+            { MSTable = new TableLayoutPanel(); }
+            else { return; }
+
+            loadHeader(MSTable,400);
 
             //MSTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-
-            MSTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
-            MSTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
-            MSTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
-
-            MSTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-            MSTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 400));
-            MSTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
-            Controls.Add(MSTable);
-
-            MSTable.Controls.Add(lblBalance, 1, 0);
-            MSTable.SetColumnSpan(lblBalance, 2);
-
-            MSTable.Controls.Add(btnToMenu, 0, 0);
-
             MSField = new TableLayoutPanel();
-
             MSField.Size = new Size(350, 350);
 
             MSField.Dock = DockStyle.None;
             MSField.Anchor = AnchorStyles.None;
-
+            if (MSTable == null) MessageBox.Show("null");
             MSTable.Controls.Add(MSField, 0, 1);
             MSTable.SetColumnSpan(MSField, 3);
 
@@ -272,6 +227,10 @@ namespace Casino777
             MSTable.RowCount++;
             MSTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
             MSTable.Controls.Add(lblMSstat, 0, 4);
+        }
+        private void RouletteLoad(object sender, EventArgs e)
+        {
+
         }
     }
 }

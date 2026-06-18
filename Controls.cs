@@ -12,18 +12,8 @@ namespace Casino777
         //Слоты
         private void BtnDep_Click(object? sender, EventArgs e)
         {
-            long newCash = Balance.Cash - (long)choiseBet.Value;
-            if (Balance.Cash == 0)
-            {
-                MessageBox.Show("Ты нищий XDDDD");
-                return;
-            }
-            else if (newCash < 0)
-            {
-                MessageBox.Show("Не хвататет денег?\nПродай бабушку");
-                return;
-            }
-            Balance.Cash = newCash;
+            if (!checkBalance(choiseBet)) return;
+            Balance.Cash += (long)choiseBet.Value;
             timerSlots.Start();
             countSpin = 0;
 
@@ -69,6 +59,7 @@ namespace Casino777
         public int MScountDiamonds;
         private void BtnMSstart_Click(object? sender, EventArgs e)
         {
+            if (!checkBalance(MSchoiseBet)) return;
             btnMSstart.Enabled = false;
             btnMSstop.Enabled = true;
             MSbet = (long)MSchoiseBet.Value;
@@ -122,6 +113,7 @@ namespace Casino777
         }
         private void buttonsMS_Click(object? sender, EventArgs e)
         {
+            
             Button clickedButton = (Button)sender;
             TableLayoutPanelCellPosition pos = MSField.GetCellPosition(clickedButton);
             int row = pos.Row;
@@ -183,6 +175,52 @@ namespace Casino777
         {
             lblBalance.Text = $"Баланс: {Balance.Cash}";
         }
+        public bool checkBalance(NumericUpDown bet)
+        {
+            long newCash = Balance.Cash - (long)bet.Value;
+            if (Balance.Cash == 0)
+            {
+                MessageBox.Show("Ты нищий XDDDD");
+                return false;
+            }
+            else if (newCash < 0)
+            {
+                MessageBox.Show("Не хвататет денег?\nПродай бабушку");
+                return false;
+            }
+            return true;
+        }
+        public bool checkLoad(TableLayoutPanel? ftable)
+        {
+            table.Hide();
+            if (ftable != null)
+            {
+                ftable.Controls.Add(lblBalance, 1, 0);
+                ftable.Controls.Add(btnToMenu, 0, 0);
+                ftable.Show();
+                return false;
+            }
+            return true;
+        }
+        public void loadHeader(TableLayoutPanel? ftable, int size)
+        {
+            ftable.Dock = DockStyle.Fill;
+            ftable.ColumnCount = 3;
+            ftable.RowCount = 3;
 
+            ftable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
+            ftable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
+            ftable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
+
+            ftable.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
+            ftable.RowStyles.Add(new RowStyle(SizeType.Absolute, size));
+            ftable.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
+            Controls.Add(ftable);
+
+            ftable.Controls.Add(lblBalance, 1, 0);
+            ftable.SetColumnSpan(lblBalance, 2);
+
+            ftable.Controls.Add(btnToMenu, 0, 0);
+        }
     }
 }
